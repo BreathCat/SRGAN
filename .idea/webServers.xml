@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="1babbe3b-548f-4a3a-b7f0-e43fcdc297a7" name="2080ti" url="http://219.242.247.245">
+        <fileTransfer host="219.242.247.245" port="22" rootFolder="/home/li/Desktop/SRGAN_try1_lzh" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
