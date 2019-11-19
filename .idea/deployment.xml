@@ -5,7 +5,7 @@
       <paths name="2080ti">
         <serverdata>
           <mappings>
-            <mapping deploy="/home/li/Desktop/SRGAN_try1_lzh" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>

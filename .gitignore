@@ -2,3 +2,6 @@
 # Default ignored files
 /workspace.xml
 data/
+home/
+training_results/
+/postrequest.py
