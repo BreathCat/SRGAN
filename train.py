@@ -15,6 +15,7 @@ from data_utils import TrainDatasetFromFolder, ValDatasetFromFolder, display_tra
 from loss import GeneratorLoss
 from model import Generator, Discriminator
 
+Terminal_Output = open('/Users/michael/test.txt', 'w+')
 parser = argparse.ArgumentParser(description='Train Super Resolution Models')
 parser.add_argument('--crop_size', default=88, type=int, help='training images crop size')
 parser.add_argument('--upscale_factor', default=4, type=int, choices=[2, 4, 8],
@@ -37,9 +38,9 @@ if __name__ == '__main__':
     val_loader = DataLoader(dataset=val_set, num_workers=4, batch_size=1, shuffle=False)
 
     netG = Generator(UPSCALE_FACTOR)
-    print('# generator parameters:', sum(param.numel() for param in netG.parameters()))
+    print('# generator parameters:', sum(param.numel() for param in netG.parameters()),file=Terminal_Output)
     netD = Discriminator()
-    print('# discriminator parameters:', sum(param.numel() for param in netD.parameters()))
+    print('# discriminator parameters:', sum(param.numel() for param in netD.parameters()),file=Terminal_Output)
 
     generator_criterion = GeneratorLoss()
 
