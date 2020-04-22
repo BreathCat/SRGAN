@@ -15,7 +15,7 @@ from data_utils import TrainDatasetFromFolder, ValDatasetFromFolder, display_tra
 from loss import GeneratorLoss
 from model import Generator, Discriminator
 
-Terminal_Output = open('/Users/michael/test.txt', 'w+')
+Terminal_Output = open('./TerminalOutPut/LiZH/test.txt', 'w+')
 parser = argparse.ArgumentParser(description='Train Super Resolution Models')
 parser.add_argument('--crop_size', default=88, type=int, help='training images crop size')
 parser.add_argument('--upscale_factor', default=4, type=int, choices=[2, 4, 8],
