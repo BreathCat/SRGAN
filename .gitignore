@@ -2,6 +2,7 @@
 # Default ignored files
 /workspace.xml
 data/
-home/
 training_results/
-/postrequest.py
+.idea/
+epochs/
+benchmark_results/
