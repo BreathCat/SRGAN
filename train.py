@@ -75,7 +75,7 @@ if __name__ == '__main__':
             if torch.cuda.is_available():
                 z = z.cuda()
             fake_img = netG(z)
-
+            #
             netD.zero_grad()
             real_out = netD(real_img).mean()
             fake_out = netD(fake_img).mean()
