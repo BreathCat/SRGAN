@@ -29,19 +29,22 @@ if __name__ == '__main__':
     UPSCALE_FACTOR = opt.upscale_factor
     NUM_EPOCHS = opt.num_epochs
 
+    # Train Path
     # train_set = TrainDatasetFromFolder('data/DIV2K_train_HR', crop_size=CROP_SIZE, upscale_factor=UPSCALE_FACTOR)
     # val_set = ValDatasetFromFolder('data/DIV2K_valid_HR', upscale_factor=UPSCALE_FACTOR)
     train_set = TrainDatasetFromFolder('data/train', crop_size=CROP_SIZE, upscale_factor=UPSCALE_FACTOR)
     val_set = ValDatasetFromFolder('data/val', upscale_factor=UPSCALE_FACTOR)
 
-    train_loader = DataLoader(dataset=train_set, num_workers=4, batch_size=64, shuffle=True)
-    val_loader = DataLoader(dataset=val_set, num_workers=4, batch_size=1, shuffle=False)
+    train_loader = DataLoader(dataset=train_set, pin_memory=True, batch_size=1, shuffle=False)
+    val_loader = DataLoader(dataset=val_set,  pin_memory=True, batch_size=1, shuffle=False)
 
+    # Set Net
     netG = Generator(UPSCALE_FACTOR)
-    print('# generator parameters:', sum(param.numel() for param in netG.parameters()),file=Terminal_Output)
+    print('# generator parameters:', sum(param.numel() for param in netG.parameters()), file=Terminal_Output)
     netD = Discriminator()
-    print('# discriminator parameters:', sum(param.numel() for param in netD.parameters()),file=Terminal_Output)
+    print('# discriminator parameters:', sum(param.numel() for param in netD.parameters()), file=Terminal_Output)
 
+    # Set Loss
     generator_criterion = GeneratorLoss()
 
     if torch.cuda.is_available():
@@ -49,18 +52,23 @@ if __name__ == '__main__':
         netD.cuda()
         generator_criterion.cuda()
 
+    # Adma optimization
     optimizerG = optim.Adam(netG.parameters())
     optimizerD = optim.Adam(netD.parameters())
 
     results = {'d_loss': [], 'g_loss': [], 'd_score': [], 'g_score': [], 'psnr': [], 'ssim': []}
 
+    #
     for epoch in range(1, NUM_EPOCHS + 1):
         train_bar = tqdm(train_loader)
         running_results = {'batch_sizes': 0, 'd_loss': 0, 'g_loss': 0, 'd_score': 0, 'g_score': 0}
 
+        # Set in train mode
         netG.train()
         netD.train()
-        for data, target in train_bar:
+
+        for data, target,in train_bar:
+            print('data is ',data,'data type is', type(data),'target is ',target,'target type is', type(target))
             g_update_first = True
             batch_size = data.size(0)
             running_results['batch_sizes'] += batch_size
@@ -71,10 +79,9 @@ if __name__ == '__main__':
             real_img = Variable(target)
             if torch.cuda.is_available():
                 real_img = real_img.cuda()
-            z = Variable(data)
             if torch.cuda.is_available():
-                z = z.cuda()
-            fake_img = netG(z)
+                data = data.cuda()
+            fake_img = netG(data)
             #
             netD.zero_grad()
             real_out = netD(real_img).mean()
@@ -90,7 +97,7 @@ if __name__ == '__main__':
             g_loss = generator_criterion(fake_out, fake_img, real_img)
             g_loss.backward()
 
-            fake_img = netG(z)
+            fake_img = netG(data)
             fake_out = netD(fake_img).mean()
 
             optimizerG.step()
