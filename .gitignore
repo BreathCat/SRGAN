@@ -7,5 +7,5 @@ training_results/
 epochs/*.pth
 benchmark_results/
 /Ledig_Photo-Realistic_Single_Image_CVPR_2017_paper.pdf
-/自动上传.py
+自动上传.py
 *.pdf
