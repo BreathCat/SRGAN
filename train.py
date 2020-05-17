@@ -35,8 +35,8 @@ if __name__ == '__main__':
     train_set = TrainDatasetFromFolder('data/train', crop_size=CROP_SIZE, upscale_factor=UPSCALE_FACTOR)
     val_set = ValDatasetFromFolder('data/val', upscale_factor=UPSCALE_FACTOR)
 
-    train_loader = DataLoader(dataset=train_set, pin_memory=True, batch_size=1, shuffle=False)
-    val_loader = DataLoader(dataset=val_set,  pin_memory=True, batch_size=1, shuffle=False)
+    train_loader = DataLoader(dataset=train_set, pin_memory=True, batch_size=64, shuffle=False,drop_last=True)
+    val_loader = DataLoader(dataset=val_set,  pin_memory=True, batch_size=64, shuffle=False,drop_last=True)
 
     # Set Net
     netG = Generator(UPSCALE_FACTOR)
@@ -67,21 +67,17 @@ if __name__ == '__main__':
         netG.train()
         netD.train()
 
-        for data, target,in train_bar:
-            print('data is ',data,'data type is', type(data),'target is ',target,'target type is', type(target))
-            g_update_first = True
-            batch_size = data.size(0)
+        for sub_img, real_img,in train_bar:
+            batch_size = sub_img.size(0)
             running_results['batch_sizes'] += batch_size
-
             ############################
             # (1) Update D network: maximize D(x)-1-D(G(z))
             ###########################
-            real_img = Variable(target)
             if torch.cuda.is_available():
                 real_img = real_img.cuda()
             if torch.cuda.is_available():
-                data = data.cuda()
-            fake_img = netG(data)
+                sub_img = sub_img.cuda()
+            fake_img = netG(sub_img)
             #
             netD.zero_grad()
             real_out = netD(real_img).mean()
@@ -96,9 +92,9 @@ if __name__ == '__main__':
             netG.zero_grad()
             g_loss = generator_criterion(fake_out, fake_img, real_img)
             g_loss.backward()
-
-            fake_img = netG(data)
+            fake_img = netG(sub_img)
             fake_out = netD(fake_img).mean()
+
 
             optimizerG.step()
 
